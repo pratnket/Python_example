@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
     max_count = len(urls)
 
-    for i in range(len(urls)):   #定义四个线程
+    for i in range(len(urls)):  #定义线程
         print( str(i) + " / " + str(max_count) + "  " + urls[i])
         t = threading.Thread(target=parse,args=(urls[i],)) #Thread首字母要大写，被调用的job函数没有括号，只是一个索引，参数在后面
         t.start()#开始线程
