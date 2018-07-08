@@ -11,7 +11,7 @@ import requests
 import concurrent.futures
 
 import pycurl
-import io # python3 導入法
+import io # python3 導入法 
 
 from lxml import etree
 
