@@ -20,9 +20,9 @@ class thread_curl(threading.Thread):
         self.num=num
         self.url=url
     def run(self):
-        with self.num:#同时并行指定的线程数量，执行完毕一个则死掉一个线程
+        with self.num: # 同時並行指定的線程數量，執行完畢一個則死掉一個線程
 
-            lock.acquire()#锁住线程，防止同时输出造成混乱
+            lock.acquire() # 鎖住線程，防止同時輸出造成混亂
             print ('开始一个线程：',self.name)
             print ('數據大小：',q.qsize())
             print('耗時：' , time.time() - tstart)
@@ -50,7 +50,7 @@ def save(urls):
     f = open("results.txt" , "w")
     results = []
     for _ in range(len(urls)):
-        results.append(q.get())  #q.get()按顺序从q中拿出一个值
+        results.append(q.get()) # q.get（）按順序從q中拿出一個值
     results = '\n'.join(results)
     f.write(results)
 
@@ -60,15 +60,20 @@ tstart =time.time()
 threads=[]
 q=queue.Queue()
 lock=threading.Lock()
-num=threading.Semaphore(100)#设置同时执行的线程数为100，其他等待执行
+num=threading.Semaphore(100) # 設置同時執行的線程數為100，其他等待執行
 
 urls = [line for line in open('Urls.txt',"r").read().split("\n")]
 
-#启动所有线程
 for i in range(len(urls)):#总共需要执行的次数
     t=thread_curl(q,lock,num,urls[i])
     t.start()
     threads.append(t)
+    while True:
+        #判断正在运行的线程数量,如果小于100则退出while循环,
+        #进入for循环启动新的进程.否则就一直在while循环进入死循环
+        if(len(threading.enumerate()) < 100):
+            tEnd = time.time()#計時結束
+            break
 
 for t in threads:
     t.join()
